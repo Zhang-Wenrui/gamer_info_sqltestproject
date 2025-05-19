@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">添加新玩家</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_player') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="game_id" class="form-label">游戏ID</label>
+                        <input type="text" class="form-control" id="game_id" name="game_id" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="level" class="form-label">等级</label>
+                        <input type="number" class="form-control" id="level" name="level" min="1" value="1" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="score" class="form-label">分数</label>
+                        <input type="number" class="form-control" id="score" name="score" min="0" value="0" required>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2">取消</a>
+                        <button type="submit" class="btn btn-success">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

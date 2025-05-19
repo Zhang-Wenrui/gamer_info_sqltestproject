@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">管理员界面 - 玩家数据</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">玩家数据详情</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="playerTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>游戏ID</th>
+                                <th>等级</th>
+                                <th>分数</th>
+                                <th>数据操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerData">
+                            <!-- 玩家数据将通过JavaScript加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">数据统计</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white mb-3">
+                            <div class="card-body text-center">
+                                <h3 id="totalPlayers">0</h3>
+                                <p class="mb-0">总玩家数</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white mb-3">
+                            <div class="card-body text-center">
+                                <h3 id="avgLevel">0</h3>
+                                <p class="mb-0">平均等级</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-white mb-3">
+                            <div class="card-body text-center">
+                                <h3 id="totalScore">0</h3>
+                                <p class="mb-0">总分数</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
+            <button id="refreshData" class="btn btn-primary">刷新数据</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadPlayerData();
+    
+    document.getElementById('refreshData').addEventListener('click', function() {
+        loadPlayerData();
+    });
+});
+
+function loadPlayerData() {
+    fetch('/api/players')
+        .then(response => response.json())
+        .then(data => {
+            displayPlayers(data);
+            updateStats(data);
+        })
+        .catch(error => {
+            console.error('获取玩家数据出错:', error);
+        });
+}
+
+function displayPlayers(players) {
+    const tableBody = document.getElementById('playerData');
+    tableBody.innerHTML = '';
+    
+    players.forEach(player => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${player.id}</td>
+            <td>${player.username}</td>
+            <td>${player.game_id}</td>
+            <td>${player.level}</td>
+            <td>${player.score}</td>
+            <td>
+                <a href="/edit/${player.id}" class="btn btn-sm btn-primary">编辑</a>
+                <a href="/delete/${player.id}" class="btn btn-sm btn-danger" 
+                   onclick="return confirm('确定要删除这个玩家吗？')">删除</a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function updateStats(players) {
+    // 总玩家数
+    document.getElementById('totalPlayers').textContent = players.length;
+    
+    // 平均等级
+    if (players.length > 0) {
+        const totalLevel = players.reduce((sum, player) => sum + player.level, 0);
+        const avgLevel = (totalLevel / players.length).toFixed(1);
+        document.getElementById('avgLevel').textContent = avgLevel;
+    } else {
+        document.getElementById('avgLevel').textContent = '0';
+    }
+    
+    // 总分数
+    const totalScore = players.reduce((sum, player) => sum + player.score, 0);
+    document.getElementById('totalScore').textContent = totalScore;
+}
+</script>
+{% endblock %} 
