@@ -37,7 +37,7 @@
    pip install -r requirements.txt
    
    # 运行应用
-   python app.py
+   python app.py ##运行后可以在终端看到log信息
    ```
 
 **注意**：如果遇到"ModuleNotFoundError: No module named 'flask'"错误，请确保在正确的Python环境中安装了依赖包。可以尝试明确指定Python路径：
@@ -109,4 +109,4 @@ C:\Users\...\Python\Python312\python.exe app.py
 - username：用户名（唯一）
 - game_id：游戏ID
 - level：玩家等级
-- score：玩家分数 
+- score：玩家分数 111
